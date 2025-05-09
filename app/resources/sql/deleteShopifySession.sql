@@ -1,0 +1,1 @@
+DELETE FROM shopify_sessions WHERE shop = $1::varchar
