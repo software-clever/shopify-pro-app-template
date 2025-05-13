@@ -38,6 +38,7 @@ jobs:
       #     These *replace* the placeholders for the same keys
       - name: Validate environment variables
         env:
+          DOTENV_CONFIG_PATH: .env.example
           SHOPIFY_API_KEY:    ${{ secrets.SHOPIFY_API_KEY }}
           SHOPIFY_API_SECRET: ${{ secrets.SHOPIFY_API_SECRET }}
           DATABASE_URL:       ${{ secrets.DATABASE_URL }}
