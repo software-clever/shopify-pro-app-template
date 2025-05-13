@@ -1,23 +1,30 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        node-version: [22.x]
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Use Node 20 and PNPM
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: pnpm
+          node-version:  ${{ matrix.node-version }}
+          cache: "npm"
       - run: corepack enable
 
       - name: Install deps
-        run: pnpm install --frozen-lockfile
+        run: npm install --frozen-lockfile
 
       # Load every key in .env.example (all are safe placeholders)
       - name: Load defaults from .env.example
@@ -39,12 +46,12 @@ jobs:
 
           # any public value that ought to be shared can stay in .env.example
           # but you can still override it here if necessary
-        run: pnpm exec ts-node app/env.server.ts
+        run: npm exec ts-node app/env.server.ts
         # If validation passes the job continues; if not, CI fails here
 
       - name: Lint
-        run: pnpm run lint
+        run: npm run lint
       - name: Unit tests
-        run: pnpm run test -- --runInBand
+        run: npm run test -- --runInBand
       - name: Build
-        run: pnpm run build
+        run: npm run build
