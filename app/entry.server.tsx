@@ -1,3 +1,4 @@
+import '~/env.server'; // importing runs the Zod parse, If anything is missing/malformed, the process will throw here before Remix, Shopify or DB clients are initialised.
 import { PassThrough } from "stream";
 import { renderToPipeableStream } from "react-dom/server";
 import { RemixServer } from "@remix-run/react";

@@ -4,11 +4,18 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
+import { publicEnv } from 'app/env.server';
+
+export const loader = () => {
+  return { env: publicEnv };
+};
 
 export default function App() {
+  const { env } = useLoaderData<typeof loader>();
   return (
-    <html>
+    <html lang="en" data-app-url={env.PUBLIC_APP_URL}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
