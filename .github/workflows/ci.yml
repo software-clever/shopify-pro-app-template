@@ -1,0 +1,50 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node 20 and PNPM
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: corepack enable
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      # Load every key in .env.example (all are safe placeholders)
+      - name: Load defaults from .env.example
+        id: load_env
+        run: |
+          set -o allexport      # export each line as an env var
+          source .env.example   # ignores comments / empty lines
+          set +o allexport
+        shell: bash
+
+      # Overlay the real secrets
+      #     These *replace* the placeholders for the same keys
+      - name: Validate environment variables
+        env:
+          # real secrets (configured in repo → Settings → Secrets and variables)
+          SHOPIFY_API_KEY:    ${{ secrets.SHOPIFY_API_KEY }}
+          SHOPIFY_API_SECRET: ${{ secrets.SHOPIFY_API_SECRET }}
+          DATABASE_URL:       ${{ secrets.DATABASE_URL }}
+
+          # any public value that ought to be shared can stay in .env.example
+          # but you can still override it here if necessary
+        run: pnpm exec ts-node app/env.server.ts
+        # If validation passes the job continues; if not, CI fails here
+
+      - name: Lint
+        run: pnpm run lint
+      - name: Unit tests
+        run: pnpm run test -- --runInBand
+      - name: Build
+        run: pnpm run build
