@@ -2,6 +2,7 @@
   "name": "shopify-remix-app-template",
   "private": true,
   "scripts": {
+    "validate:env": "tsx -r dotenv/config app/env.server.ts",
     "tsc": "tsc",
     "test": "jest --detectOpenHandles",
     "build": "remix vite:build",
@@ -65,6 +66,7 @@
     "prettier": "^3.2.4",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.2.2",
     "vite": "^6.2.2",
     "vite-plugin-graphql-loader": "^4.0.4"
