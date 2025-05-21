@@ -12,6 +12,7 @@ export const EnvSchema = z.object({
 
   /** Public-facing URL (sent to Shopify & rendered in <script>) */
   PUBLIC_APP_URL: z.string().url(),
+  PUBLIC_APP_NAME: z.string().min(2).max(100),
 
   /** Shopify credentials */
   SHOPIFY_API_KEY: z.string().min(1),
@@ -53,6 +54,7 @@ export const env = _env.data;
  * Only export keys that start with PUBLIC_ (and anything else you *explicitly* allow).
  */
 export const publicEnv = {
+  PUBLIC_APP_NAME: env.PUBLIC_APP_NAME,
   PUBLIC_APP_URL: env.PUBLIC_APP_URL,
   SHOPIFY_API_KEY: env.SHOPIFY_API_KEY,   // Shopify App Bridge needs this in the browser
 };
